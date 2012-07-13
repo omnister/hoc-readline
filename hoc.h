@@ -14,7 +14,7 @@ typedef struct Symbol {		/* symbol table entry */
     long type;
     union {
 	COMPLEX val;		/* VAR */
-	double (*ptr) (double);	/* BLTIN */
+	COMPLEX (*ptr) (COMPLEX);	/* BLTIN */
 	Inst *defn;		/* FUNCTION, PROCEDURE */
 	char *str;		/* STRING */
     } u;
@@ -54,11 +54,15 @@ extern void argdiveq(void), argmodeq(void);
 extern void execute(Inst *);
 extern void printtop(void);
 
-extern double Log(double), Log10(double), Gamma(double), Sqrt(double),
-Exp(double);
-extern double Asin(double), Acos(double), Sinh(double), Cosh(double),
-integer(double);
-extern double Pow(double, double);
+extern COMPLEX Log(COMPLEX), Log10(COMPLEX), Gamma(COMPLEX); 
+extern COMPLEX Sqrt(COMPLEX), Exp(COMPLEX);
+extern COMPLEX Asin(COMPLEX), Acos(COMPLEX), Sinh(COMPLEX); 
+extern COMPLEX Cosh(COMPLEX), integer(COMPLEX);
+extern COMPLEX Pow(COMPLEX, COMPLEX);
+extern COMPLEX Sin(COMPLEX), Cos(COMPLEX), Tan(COMPLEX);
+extern COMPLEX Tanh(COMPLEX), Atan(COMPLEX);
+extern COMPLEX Fabs(COMPLEX), Erf(COMPLEX), Erfc(COMPLEX);
+extern COMPLEX Mag(COMPLEX), Re(COMPLEX), Im(COMPLEX);
 
 extern void init(void);
 extern int yyparse(void);

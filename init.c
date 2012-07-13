@@ -35,26 +35,29 @@ static struct {		/* Constants */
 
 static struct {		/* Built-ins */
 	char *name;
-	double	(*func)(double);
+	COMPLEX	(*func)(COMPLEX);
 } builtins[] = {
-	{"sin",	sin},
-	{"cos",	cos},
-	{"tan",	tan},
-	{"atan",atan},
-	{"asin", Asin},	/* checks range */
-	{"acos", Acos},	/* checks range */
-	{"sinh", Sinh},	/* checks range */
-	{"cosh", Cosh},	/* checks range */
-	{"tanh", tanh},
-	{"log",	 Log},	/* checks range */
-	{"log10", Log10},	/* checks range */
-	{"exp",	Exp},	/* checks range */
-	{"sqrt", Sqrt},	/* checks range */
+	{"abs",	Fabs},
+	{"acos", Acos},		/* checks range */
+	{"asin", Asin},		/* checks range */
+	{"atan", Atan},
+	{"cos",	Cos},
+	{"cosh", Cosh},		/* checks range */
+	{"erfc", Erfc},
+	{"erf",	 Erf},
+	{"exp",	Exp},		/* checks range */
 	{"gamma", Gamma},	/* checks range */
 	{"int",	integer},
-	{"abs",	fabs},
-	{"erf",	 erf},
-	{"erfc", erfc},
+	{"log10", Log10},	/* checks range */
+	{"log",	 Log},		/* checks range */
+	{"mag",	 Mag},		
+	{"re",	 Re},		
+	{"im",	 Im},		
+	{"sinh", Sinh},		/* checks range */
+	{"sin",	Sin},
+	{"sqrt", Sqrt},		/* checks range */
+	{"tanh", Tanh},
+	{"tan",	Tan},
 	{0,	0}
 };
 

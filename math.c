@@ -1,78 +1,188 @@
 #include <math.h>
 #include <errno.h>
 extern	int	errno;
-double	errcheck();
 
 #include "hoc.h"
 
-double	errcheck(double, char*);
+double errcheck(double, char*);
 
-double
-Log(double x)
-{
-	return errcheck(log(x), "log");
-}
-double
-Log10(double x)
-{
-	return errcheck(log10(x), "log10");
+COMPLEX Mag(COMPLEX x) {
+   COMPLEX result;
+   result.re = sqrt(x.re*x.re + x.im*x.im);
+   result.im = 0.0;
+   return(result);
 }
 
-double
-Sqrt(double x)
-{
-	return errcheck(sqrt(x), "sqrt");
+COMPLEX Re(COMPLEX x) {
+   COMPLEX result;
+   result.re = x.re;
+   result.im = 0.0;
+   return(result);
 }
 
-double
-Gamma(double x)
+COMPLEX Im(COMPLEX x) {
+   COMPLEX result;
+   result.re = x.im;
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX Erf(COMPLEX x) {
+   COMPLEX result;
+   result.re = erf(x.re);
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX Erfc(COMPLEX x) {
+   COMPLEX result;
+   result.re = erfc(x.re);
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX Sin(COMPLEX x) {
+   COMPLEX result;
+   result.re = sin(x.re);
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX Cos(COMPLEX x) {
+   COMPLEX result;
+   result.re = cos(x.re);
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX Tan(COMPLEX x) {
+   COMPLEX result;
+   result.re = tan(x.re);
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX Tanh(COMPLEX x) {
+   COMPLEX result;
+   result.re = tanh(x.re);
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX Atan(COMPLEX x) {
+   COMPLEX result;
+   result.re = atan(x.re);
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX Fabs(COMPLEX x) {
+   COMPLEX result;
+   result.re = fabs(x.re);
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX Log(COMPLEX x)
 {
+   COMPLEX result;
+   result.re = errcheck(log(x.re), "log");
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX Log10(COMPLEX x)
+{
+   COMPLEX result;
+   result.re = errcheck(log10(x.re), "log10");
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX
+Sqrt(COMPLEX x)
+{
+   COMPLEX result;
+   result.re = errcheck(sqrt(x.re), "sqrt");
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX
+Gamma(COMPLEX x)
+{
+        COMPLEX result;
 	double y;
 	extern int signgam;
-	y=errcheck(gamma(x), "gamma");
+	y=errcheck(gamma(x.re), "gamma");
 	if(y>88.0)
 		execerror("gamma result out of range", (char *)0);
-	return signgam*exp(y);
+	result.re = signgam*exp(y);
+	result.im = 0.0;
+	return result;
 }
 
-double
-Exp(double x)
+COMPLEX
+Exp(COMPLEX x)
 {
-	return errcheck(exp(x), "exp");
+   COMPLEX result;
+   result.re = errcheck(exp(x.re), "exp");
+   result.im = 0.0;
+   return(result);
 }
 
-double
-Asin(double x)
+COMPLEX
+Asin(COMPLEX x)
 {
-	return errcheck(asin(x), "asin");
+   COMPLEX result;
+   result.re = errcheck(asin(x.re), "asin");
+   result.im = 0.0;
+   return(result);
 }
 
-double
-Acos(double x)
+COMPLEX
+Acos(COMPLEX x)
 {
-	return errcheck(acos(x), "acos");
+   COMPLEX result;
+   result.re = errcheck(acos(x.re), "acos");
+   result.im = 0.0;
+   return(result);
 }
 
-double
-Sinh(double x)
+COMPLEX
+Sinh(COMPLEX x)
 {
-	return errcheck(sinh(x), "sinh");
-}
-double
-Cosh(double x)
-{
-	return errcheck(cosh(x), "cosh");
-}
-double
-Pow(double x, double y)
-{
-	return errcheck(pow(x,y), "exponentiation");
+   COMPLEX result;
+   result.re = errcheck(sinh(x.re), "sinh");
+   result.im = 0.0;
+   return(result);
 }
 
-double
-integer(double x)
+COMPLEX
+Cosh(COMPLEX x)
 {
-	return (double)(long)x;
+   COMPLEX result;
+   result.re = errcheck(cosh(x.re), "cosh");
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX
+Pow(COMPLEX x, COMPLEX y)
+{
+   COMPLEX result;
+   result.re = errcheck(pow(x.re, y.re), "exponentiation");
+   result.im = 0.0;
+   return(result);
+}
+
+COMPLEX
+integer(COMPLEX x)
+{
+   COMPLEX result;
+   result.re = (long) x.re;
+   result.im = 0.0;
+   return(result);
 }
 
 double

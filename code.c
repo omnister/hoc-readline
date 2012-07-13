@@ -296,8 +296,7 @@ bltin(void)
 	Datum d;
 	d = pop();
 	// FIXME: complex builtins
-	d.val.re = (*(double (*)(double))*pc++)(d.val.re);
-	d.val.im = 0.0;
+	d.val = (*(COMPLEX (*)(COMPLEX))*pc++)(d.val);
 	push(d);
 }
 
@@ -557,9 +556,7 @@ power(void)
 	Datum d1, d2;
 	d2 = pop();
 	d1 = pop();
-	// FIXME: complex
-	d1.val.re = Pow(mag(d1.val), mag(d2.val));
-	d1.val.im = 0.0;
+	d1.val = Pow(d1.val, d2.val);
 	push(d1);
 }
 
