@@ -167,6 +167,8 @@ Cosh(COMPLEX x)
    return(result);
 }
 
+// fixme should do complex equivalent, not just real parts
+
 COMPLEX
 Pow(COMPLEX x, COMPLEX y)
 {

@@ -1,11 +1,11 @@
 YFLAGS = -d
 BIN = /usr/local/bin/
 MAN = /usr/local/man/man1/
-SRCS = hoc.y code.c init.c math.c symbol.c
-OBJS = hoc.o code.o init.o math.o symbol.o 
+SRCS = hoc.y code.c init.c math.c symbol.c rlgetc.c
+OBJS = hoc.o code.o init.o math.o symbol.o  rlgetc.o
 DEMOS =  demo.ack demo.depth demo.fib demo.ohmcalc
-HEADERS = hoc.h y.tab.h
-EXTRAS = hoc.1 README TODO hocold.y hocreadline.y
+HEADERS = hoc.h y.tab.h rlgetc.h
+EXTRAS = hoc.1 README 
 CCFLAGS = -g -Wall
 
 hoc:	$(OBJS)

@@ -6,7 +6,6 @@ static struct {		/* Keywords */
 	char	*name;
 	int	kval;
 } keywords[] = {
-	{"i", 		I},	// sqrt(-1)
 	{"I", 		I},	// sqrt(-1)
 	{"proc",	PROC},
 	{"func",	FUNC},

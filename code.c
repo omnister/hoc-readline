@@ -554,9 +554,17 @@ void
 power(void)
 {
 	Datum d1, d2;
+	double theta,mag;
 	d2 = pop();
 	d1 = pop();
-	d1.val = Pow(d1.val, d2.val);
+	// d1.val = Pow(d1.val, d2.val);
+	
+	theta=atan2(d1.val.im,d1.val.re);
+	mag=sqrt(d1.val.re*d1.val.re + d1.val.im*d1.val.im);
+
+	d1.val.re = pow(mag,d2.val.re)*cos(theta*d2.val.re);
+	d1.val.im = pow(mag,d2.val.re)*sin(theta*d2.val.re);
+	
 	push(d1);
 }
 
