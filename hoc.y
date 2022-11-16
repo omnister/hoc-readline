@@ -7,6 +7,10 @@
 #define	code2(c1,c2)	code(c1); code(c2)
 #define	code3(c1,c2,c3)	code(c1); code(c2); code(c3)
 double re, im;
+extern int       indef;
+void yyerror(char* s);
+int yylex(void);
+int yydebug;
 %}
 %union {
 	Symbol	*sym;	/* symbol table pointer */
@@ -411,8 +415,7 @@ int follow(int expect, int ifyes, int ifno)	/* look ahead for >=, etc. */
 	return ifno;
 }
 
-void
-yyerror(char* s)	/* report compile-time error */
+void yyerror(char* s)	/* report compile-time error */
 {
 /*rob
 	warning(s, (char *)0);
@@ -421,8 +424,7 @@ rob*/
 	execerror(s, (char *)0);
 }
 
-void
-execerror(char* s, char* t)	/* recover from run-time error */
+void execerror(char* s, char* t)	/* recover from run-time error */
 {
 	warning(s, t);
 	fseek(fin, 0L, 2);		/* flush rest of file */
