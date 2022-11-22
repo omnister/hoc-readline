@@ -1,0 +1,51 @@
+func ohm() {
+    width = $1 - .04
+    length = $2
+    contact = 10 / width
+    body = (length/width)*250
+    return contact+body
+}
+
+func rating() {
+    width = $1-.04
+    length = $2
+    return .35 * width
+}
+
+proc ana() {
+    drawnwidth = $1
+    length = $2
+	print "\n"
+	print "for drawn width = ",drawnwidth,", length = ",length,"\n"
+    print "resistance = ",ohm(drawnwidth,length), " ohms\n"
+	print "current rating = ",rating(drawnwidth,length), " milliamps\n"  
+	print "\n"
+	print "-------------------------------------------------\n"
+}
+
+proc syn() {
+	value = $1
+	current = $2
+	drawnwidth = int(((current/.35)+.4)*10+1)/10
+	length = int(drawnwidth * (value/250)*10)/10
+	print "\n"
+        print "for actual resistance = ",ohm(drawnwidth,length)," ohms\n"
+	print "and current rating = ",rating(drawnwidth,length), " milliamps\n"  
+	print "width = ",drawnwidth,", length = ",length,"\n"
+	print "\n"
+	print "-------------------------------------------------\n"
+	print "\n"
+}
+
+proc help() {
+	print "\n"
+	print "enter 'ana(width,length)' to analyze a given resistor\n"
+	print "enter 'syn(resistance,milliamps)' to synthesize a resistor\n"
+	print "enter 'help()' for this message\n"
+	print "\n"
+	print "-------------------------------------------------\n"
+}
+
+print "\n"
+print "-------------------------------------------------\n"
+help()
