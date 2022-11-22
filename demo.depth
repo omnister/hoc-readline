@@ -1,0 +1,7 @@
+
+func depth() {
+	print $1,"\n";	#/* print the argument w/a newline */
+	depth($1+1);	#/* recursively invoke the function */
+}
+
+depth(1);		#	/* execute function depth */
