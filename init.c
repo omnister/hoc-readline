@@ -24,7 +24,11 @@ static struct {		/* Constants */
 	double cval;
 } consts[] = {
 	{"PI",	 3.14159265358979323846},
+	{"E0",	 8.85418781762e-12}, 		// farads per meter
+	{"M0",	 1.6605390666e-27}, 		// kilograms per dalton
+	{"MU",	 1.25663706143e-6},		// mu0 4*PI*1e-7 H/m
 	{"E",	 2.71828182845904523536},
+	{"Q", 	1.602176634e-19},		// charge of electron coulombs=amp-sec
 	{"GAMMA", 0.57721566490153286060},  	/* Euler */
 	{"DEG",	57.29577951308232087680},  	/* deg/radian */
 	{"PHI",   1.61803398874989484820},  	/* golden ratio */

@@ -1,167 +1,384 @@
+.de L
+.B \\$1 \\$2 \\$3 \\$4 \\$5 \\$6 
+..
+.de EX
+.ft B
+.nf
+..
+.de EE
+.ft R
+.fi
+..
 .TH HOC 1
-.CT 1 numbers
 .SH NAME
-hoc \(mi interactive floating point language
+hoc \- interactive language for complex PWL arithmetic
 .SH SYNOPSIS
 .B hoc
-[
-.I file ...
-]
+[ file ] [ - ]
 .SH DESCRIPTION
 .I Hoc
-interprets a simple language for floating point arithmetic,
-at about the level of Basic, with C-like syntax and
-functions.
-.PP
-The named
-.IR file s
-are read and interpreted in order.
-If no
+scans each input
 .I file
-is given or if
-.I file
-is
-.L -
+for input expressions and function definitions, executing each line as
+it occurs in the file.  
+A single hyphen '-' can be used in the argument list to denote standard
+input.  A typical use for this feature is it to invoke 
 .I hoc
-interprets the standard input.
-.PP
+as 'hoc def_file -'.
+This causes
+.I hoc
+to read the definition file and then continue with an interactive
+session on stdin.
+.SH HOC Expressions
 .I Hoc
-input consists of
-.I expressions
-and
-.IR statements .
-Expressions are evaluated and their results printed.
-Statements, typically assignments and function or procedure
-definitions, produce no output unless they explicitly call
-.IR print .
+is an expression language, much like C: although there are several
+control-flow statements, most statements such as assignments are expressions
+whose value is disregarded. For example, the assignment operator '=' assigns
+the value of its right operand to its left operand, and yields the value, so
+multiple assignments work.  The expression grammar is:
+.sp
+.DS
+    expr:           number
+              |     variable
+              |     ( expr )
+              |     expr binop expr
+              |     unop expr
+              |     function ( arguments )
+.DE
 .PP
-Variable names have the usual syntax, including 
-.LR _ ;
-the name 
+Numbers are floating point.  The input format is that recognized by
+scanf(3): digits, decimal point, digits,
+.I e
+or 
+.I E,
+signed exponent.  At least one digit or a decimal point must be present; the
+other components are optional.  In addition, the engineering suffixes 
+"a,f,p,n,u,m,k,meg,g,t" are recognized, when appended to a number without
+an intervening space.  Adding the suffix "I" will make a number imaginary.
+.PP
+Variable names are formed from a letter followed by a string of letters and
+numbers. The special name
 .L _
 by itself contains the value of the last expression evaluated.
-Certain variables are already initialized:
-.TP
-.B E
-base of natural logs
-.PD0
-.TP
-.B PI
-.TP
-.B PHI
-golden ratio
-.TP
-.B GAMMA 
-Euler's constant
-.TP
-.B DEG 
-180/PI, degrees per radian
-.TP
-.B PREC
-maximum number of significant digits in output, initially 15;
-.B PREC=0
-gives shortest `exact' values.
-.PD
+
+.I binop
+refers to binary operators such as addition, or logical comparison; 
+.I unop
+refers to the two negation operators, '!' (logical negation, 'not')
+and '-' (arithmetic negation, sign change). Table 1 lists the operators.
+.KS
+.DS
+.sp
+.nf
+.na
+Table 1: Operators, in decreasing order of precedence
+
+^                 exponentiation (FORTRAN **), right associative
+! - ++ --         negation, unary minus, pre/post inc/dec
+* / %             multiplication, division, modulo
++ -               addition, subtraction
+> >= < <= == !=   relational operators (all same precedence)
+&&                logical AND (both operands always evaluated)
+||                logical OR (both operands always evaluated)
+= += -= *= /= %=  assignment, right associative
+.KE
+.fi
+.ad
 .PP
-Expressions are formed with these C-like operators, listed by
-decreasing precedence.
-.TP
-.B ^
-exponentiation
-.TP
-.B ! - ++ --
-.TP
-.B * / %
-.TP
-.B + -
-.TP
-.B > >= < <= == !=
-.TP
-.B &&
-.TP
-.B ||
-.TP
-.B = += -= *= /= %=
+Functions, as described later, may be defined by the user.  Function
+arguments are expressions separated by commas.  There are also a number
+of built-in functions, all of which take a single argument, described in
+Table 2.  Functions with "x,y" arguments use only operate on the real
+part of the argument.  Functions with "z" arguments operate on the
+full complex value.
+.sp
+.KS
+.TS
+tab(;);
+center;
+c s
+l l.
+Table 2: Built-in Functions
+	
+fabs(x);|x|, absolute value of x
+acos(x);arc cosine of x
+atan(x);arc tangent of x
+cos(x);cosine of x
+cosh(x);hyperbolic cosine of x
+erf(x);error function
+erfc(x);complimentary error function
+exp(x);exponential of x
+gamma(x);gamma function
+im(z);imaginary part of z
+integer(x);integer part of x, truncated towards zero
+log(x);logarithm base e of x
+log10(x);logarithm base 10 of x
+mag(z);magnitude of z
+pow(x,y);exponentiation x to the power of y
+re(z);real part of z
+sin(x);sine of x
+sinh(x);hyperbolic sin of x
+sqrt(x);square root of x
+tanh(x);hyperbolic tangent of x
+exit(x);terminate hoc(), return x to shell
+.TE
+.KE
 .PP
-Built in functions include
-.BR abs ,
-.BR acos ,
-.B atan
-(one argument),
-.BR cos ,
-.BR cosh ,
-.BR erf ,
-.BR erfc ,
-.BR exp ,
-.BR gamma ,
-.BR int ,
-.BR log ,
-.BR log10 ,
-.BR sin ,
-.BR sinh ,
-.BR sqrt ,
-.BR tan ,
+Logical expressions have value 1.0 (true) and 0.0 (false). As in C, any
+non-zero value is taken to be true.  As is always the case with floating
+point numbers, equality comparisons are inherently suspect.
+.PP
+.I Hoc
+also has a few built-in constants, shown in Table 3.
+.sp
+.TS
+center;
+c s s
+l l l.
+Table 3: Built-in Constants
+		
+DEG	57.29577951308232087680	180/PI, degrees per radian
+E	2.71828182845904523536	e, base of natural logarithms
+E0	8.85418781762e-12	farads/meter
+GAMMA	0.57721566490153286060	Euler-Mascheroni constant
+M0	1.6605390666e-27	kilograms/dalton
+MU	1.25663706143e-6	4*PI*1e-7 Henries/meter
+PHI	1.61803398874989484820	(sqrt(5)+1)/2, the golden ratio
+PI	3.14159265358979323846	circular transcendental number
+PREC	15	output precision
+Q	1.602176634e-19	charge of electron in coulombs
+.TE
+.SH Statements and Control Flow
+.PP
+.I Hoc
+statements have the following grammar:
+.sp
+.DS
+    stmt:           expr    
+              |     variable = expr
+              |     procedure ( arglist )
+              |     while ( expr ) stmt
+              |     if ( expr ) stmt
+              |     if ( expr ) stmt else stmt
+              |     { stmtlist }
+              |     print expr-list
+              |     return optional-expr
+	      |	    "quit"
+    
+    stmtlist:       (nothing)
+              |     stmtlist stmt
+.DE
+.PP
+An assignment is parsed by default as a statement rather than an expression,
+so assignments typed interactively do not print their value.
+.PP
+Note that semicolons are not special to 
+.I hoc:
+statements are terminated by newlines.  This causes some peculiar behavior.
+The following are legal
+.I if
+statements:
+.sp
+.DS
+    if (x < 0) print(y) else print(z)
+
+    if (x<0) {
+        print(y)
+    } else {
+        print(z)
+    }
+.DE
+.sp
+.br
+.LP
+In the second example, the braces are mandatory: the newline after the 
+.I if
+would terminate the statement and produce a syntax error were the braces
+ommitted.
+.PP
+The syntax and semantics of
+.I hoc
+control flow facilities are basically the same as in C. the
+.I while
 and
-.BR tanh .
-The function
-.B read(x)
-reads a value into the variable
-.BR x ;
-the statement
-.B print
-prints a list of expressions that may include
-string constants such as
-.B \&\&\&"hello\en".
+.I if
+statements are just as in C, except there are no 
+.I break
+or
+.I continue
+statements.
+.SH Input and Output: read and print commands
+.sp
 .PP
-Control flow statements are
-.BR if - else ,
-.BR while ,
-and
-.BR for ,
-with braces for grouping.
-Newline ends a statement.
-Backslash-newline is equivalent to a space.
+The input function read, like the other built-ins, takes a single 
+argument.  Unlike the built-ins, though, the argument is not an
+expression; it is the name of a variable.  The next number 
+(as defined above) is read from the standard input and assigned
+to the named variable.  The return value of 
+.I read
+is 1 (true) if a value was read, and 0 (false) if 
+.I read
+encountered end of file or an error.
 .PP
-Functions and procedures are introduced by the words
-.B func
-and
-.BR proc ;
-.B return
-is used to return with a value from a function.
-Within a function or procedure,
-arguments are referred to as
-.BR $1 ,
-.BR $2 ,
-etc.; all other variables are global.
-.SH EXAMPLES
-.EX
-func gcd() {
-	temp = abs($1) % abs($2)
-	if(temp == 0) return abs($2)
-	return gcd($2, temp)
+Output is generated with the
+.I print
+statement.  The arguments to
+.I print
+are a comma-separated list of expressions and strings in double quotes, as
+in C.  Newlines must be supplied; the are never provided automatically by
+.I print.
+.PP
+Note that
+.I read
+is a special built-in function and therefore takes a single parenthesized
+argument, while 
+.I print
+is a statement that takes a comma-separated, unparenthesized list:
+.sp
+.DS
+    while (read(x)) {
+        print "value is ", x, "\\n"
+    }
+.sp
+.DE
+.SH Functions and Procedures
+.PP
+Functions and procedures are distinct in 
+.I hoc,
+although they are defined by the same mechanism.  This distinction is simply
+for run-time error checking: it is an error for a procedure to return a
+value, and for a function
+.I not
+to return one.
+.PP
+The definition syntax is:
+.sp
+.DS
+.nf
+.na
+    function:   func name() stmt
+    procedure:  proc name() stmt
+.fi
+.ad
+.sp
+.DE
+.LP
+.I name
+may be the name of any variable - built-in functions are excluded.
+The definition, up to the opening brace or statement, must be on one line,
+as with the 
+.I if
+statements above.
+.PP
+Unlike C, the body of a function or procedure may take arguments,
+separated by commas, when invoked.  Arguments are referred to as in the
+shell: $3 refers to the third (1-indexed) argument.  They are passed by
+value and within functions are semantically equivalent to variables.  It
+is an error to refer to an argument numbered greater than the number of
+arguments passed to the routine.  The error checking is done
+dynamically, however, so routine may have variable numbers of arguments
+if initial arguments affect the number of arguments to be referenced (as
+in C's
+.I printf
+).
+.PP
+Functions and procedures may recurse, but the stack has limited depth (about
+a hundred calls). The following shows a 
+.I hoc
+definition of Ackermann's functions:
+.sp
+.DS
+.nf
+.na
+func ack() {
+    if ($1 == 0) return $2+1
+    if ($2 == 0) return ack($1-1, 1)
+    return ack($1-1, ack($1, $2-1))
 }
-for(i=1; i<12; i++) print gcd(i,12)
-.EE
-.SH "SEE ALSO"
-.IR bc (1),
-.IR dc (1)
+
+ack(3, 2)
+        29
+ack(3, 3)
+        61
+ack(3, 4)
+hoc: stack too deep near line 8
+...
+.fi
+.ad
+.sp
+.DE
+.sp
+.SH Examples
+An HP25 resistor calculator program:
+.sp
+.nf
+.na
+
+func ohm() {
+    width = $1 - .04
+    length = $2
+    contact = 10 / width
+    body = (length/width)*250
+    return contact+body
+}
+
+func rating() {
+    width = $1-.04
+    length = $2
+    return .35 * width
+}
+
+proc ana() {
+    drawnw = $1
+    length = $2
+    print "\\n"
+    print "for drawn width = ",drawnw,", length = ",length,"\\n"
+    print "resistance = ",ohm(drawnw,length), " ohms\\n"
+    print "max current = ",rating(drawnw,length), " mA\\n"  
+    print "\\n"
+    print "-------------------------------------------------\\n"
+}
+
+proc syn() {
+    value = $1
+    current = $2
+    drawnw = int(((current/.35)+.4)*10+1)/10
+    length = int(drawnw * (value/250)*10)/10
+    print "\\n"
+    print "actual resistance = ",ohm(drawnw,length)," ohms\\n"
+    print "and max current = ",rating(drawnw,length), " mA.\\n"  
+    print "for width = ",drawnw,", length = ",length,"\\n"
+    print "\\n"
+    print "-------------------------------------------------\\n"
+    print "\\n"
+}
+
+proc help() {
+    print "\\n"
+    print "use 'ana(width,length)' to analyze a given resistor\\n"
+    print "use 'syn(resistance,mA)' to synthesize a resistor\\n"
+    print "use 'help()' for this message\\n"
+    print "\\n"
+    print "-------------------------------------------------\\n"
+}
+
+print "\\n"
+print "-------------------------------------------------\\n"
+help()
+
+.fi
+.ad
+.SH SEE ALSO
+Examples in the source code directory.
 .br
-B. W. Kernighan and R. Pike,
+B. W. Kernighan, Rob Pike,
 .I
-The Unix Programming Environment,
-Prentice-Hall, 1984
-.SH BUGS
-.br
-All components of a 
-.B for
-statement must be non-empty.
-.br
-Error recovery is imperfect within function and procedure definitions.
-.br
-The treatment of newlines is not exactly user-friendly.
-.br
-Functions and procedures typically have to be declared
-before use, which makes mutual recursion a bit impossible.
-.br
-Arguments $1, etc., are not really variables and thus won't work
-in constructs like, for instance, $1++.
+The UNIX Programming Environment.
+.SH History
+The source code for
+.I Hoc
+is given in "The UNIX Programming Environment", referenced above.  An
+improved version was released by AT&T several years later.  This version
+of the program is currently installed and maintained by Rick Walker
+(walker@omnisterra.com).  The main additions are gnu-readline command line
+editing, scientific notation and complex arithmetic.

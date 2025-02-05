@@ -11,7 +11,7 @@
 ..
 .TH HOC 1
 .SH NAME
-posthoc \- interactive language for complex PWL arithmetic
+hoc \- interactive language for complex PWL arithmetic
 .SH SYNOPSIS
 .B hoc
 [ file ] [ - ]
